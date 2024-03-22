@@ -3,8 +3,8 @@
 # If you are using VS Code you can easily do that at the bottom right corner of the window
 
 # Collect static files
-# echo "Collecting static files...."
-# python manage.py collectstatic --noinput || exit 1
+ echo "Collecting static files...."
+ python manage.py collectstatic --noinput || exit 1
 
 # Apply database migrations
 echo "Apply database migrations"

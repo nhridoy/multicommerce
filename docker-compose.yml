@@ -1,13 +1,13 @@
 version: "3.8"
 
 services:
-  mailgrass_backend:
+  multicommerce_backend:
     container_name: multicommerce_backend
     image: hridoyboss12/multicommerce:latest
 #    platform: linux/amd64
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8008:8000"
     volumes:
 #      - npm:/app
       - ./.env:/app/.env:ro

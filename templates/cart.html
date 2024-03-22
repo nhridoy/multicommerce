@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load math_filters %}
+{% load static %}
+
+{% block body_block %}
+    <div class="grid grid-cols-2 gap-4 mt-4">
+        <div class="flex flex-col gap-4">
+            {% for product in cart_items %}
+                <div class="bg-gray-200 border grid grid-cols-12 gap-4 items-center">
+                    <img src="{{ product.product.image.url }}" alt="" class="object-cover w-full col-span-2">
+                    <h3 class="text-lg col-span-5">{{ product.product.name }}</h3>
+                    <h3 class="text-lg col-span-3">{{ product.product.price }} x {{ product.quantity }}</h3>
+                    <h3 class="text-lg col-span-2">{{ product.product.price|multiply:product.quantity }}</h3>
+                </div>
+            {% empty %}
+                <p>Your cart is empty.</p>
+            {% endfor %}
+        </div>
+        <div class="flex flex-col gap-4">
+            <div class="bg-gray-200 border grid grid-cols-12 gap-4 items-center p-4">
+                <h3 class="text-lg col-span-9">Total</h3>
+                <h3 class="text-lg col-span-3">{{ cart.get_total }}</h3>
+            </div>
+            <a href="{% url 'cart:confirm_order' %}" class="bg-yellow-400 hover:bg-yellow-500 text-center p-4 ">Confirm
+                Order</a>
+        </div>
+    </div>
+{% endblock %}
+

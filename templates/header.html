@@ -1,0 +1,28 @@
+{% load static %}
+
+{% load i18n %}
+<!-- Menu Top Section -->
+<div class="flex w-full bg-gray-900 py-3">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between text-white">
+            <a href="{% url "ecommerce:index" %}" class="font-semibold text-xl">Ecommerce</a>
+            <div class="flex gap-4 text-md">
+                {% if user.is_authenticated %}
+                    {% if user.user_type == "seller" %}
+                        <a class="px-2 p-1 hover:bg-gray-200 active:bg-gray-300" href="{% url 'product:inventory' %}">Inventory</a>
+                    {% else %}
+                        <a class="px-2 p-1 hover:bg-gray-200 active:bg-gray-300"
+                           href="{% url 'cart:cart' %}">Cart</a>
+                    {% endif %}
+                    <a href="{% url 'user:logout' %}"
+                       class="px-2 p-1 hover:bg-gray-200 active:bg-gray-300">Logout</a>
+                {% else %}
+                    <a href="{% url 'user:login' %}"
+                       class="px-2 p-1 hover:bg-gray-200 active:bg-gray-300">Login</a>
+
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

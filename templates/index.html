@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_block %}
+    <div class="grid grid-cols-3 items-center gap-4 mt-4" id="products">
+        {% for product in products %}
+            <div class="col-span-1 bg-gray-200 border product flex flex-col gap-2">
+                <img src="{{ product.image.url }}" alt="" class="object-cover w-full">
+                <h3 class="text-lg p-2">Seller - {{ product.seller.username }}</h3>
+                <h3 class="text-lg p-2">Product - {{ product.name }}</h3>
+                <h3 class="text-lg p-2">BDT - {{ product.price }}</h3>
+                <a href="{% url 'cart:add_to_cart' product_id=product.pk %}" class="p-4 text-center bg-yellow-400 hover:bg-yellow-600"
+                >Add to Cart</a>
+
+                {% if products.has_next and forloop.last %}
+                    <span hx-get="{% url 'ecommerce:index' %}?page={{ products.next_page_number }}"
+                          hx-swap="beforeend" hx-target="#products" hx-select=".product"
+                          hx-trigger="revealed">
+            </span>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}
+

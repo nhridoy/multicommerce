@@ -4,6 +4,8 @@ FROM arm64v8/python:bullseye AS arm64_base
 FROM python:bullseye AS amd64_base
 # ... (AMD-specific instructions)
 RUN apt update && apt upgrade -y
+RUN apt install -y cron
+
 
 # Choose the appropriate base depending on the target architecture
 ARG TARGETARCH

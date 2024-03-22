@@ -13,9 +13,11 @@ python manage.py migrate
 echo "Creating Superuser"
 python manage.py init
 
-echo "Cronjob"
+echo "Creating Cronjob"
 python manage.py crontab add
 python manage.py crontab add
+
+echo "Showing Cronjob"
 python manage.py crontab show
 
 # Start server

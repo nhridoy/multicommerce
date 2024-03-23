@@ -174,15 +174,7 @@
 
 {% block body_block %}
     <button class="bg-yellow-400 hover:bg-yellow-600 p-4" data-micromodal-trigger="modal-1">Add New Item</button>
-    <div class="grid grid-cols-3 items-center gap-4 mt-4" id="products">
-        {#        {% for product in products %}#}
-        {#            <div class="col-span-1 bg-gray-200 border">#}
-        {#                <img src="{{ product.image.url }}" alt="" class="object-cover w-full">#}
-        {#                <h3 class="text-lg p-2">{{ product.name }}</h3>#}
-        {#                <h3 class="text-lg p-2">BDT - {{ product.price }}</h3>#}
-        {#            </div>#}
-        {#        {% endfor %}#}
-    </div>
+    <div class="grid grid-cols-3 items-center gap-4 mt-4" id="products"></div>
     <div id="loading" class="text-center text-2xl p-8" style="display: none;">Loading Products...</div>
 
 
@@ -198,7 +190,7 @@
                     <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
                 </header>
                 <main class="modal__content" id="modal-1-content">
-                    <form enctype="multipart/form-data" method="POST">
+                    <form>
                         {{ form|crispy }}
                         {% csrf_token %}
                         <button type="submit"
@@ -277,7 +269,7 @@
                 });
         }
 
-        
+
         // Initial load
         loadMorePosts();
 
@@ -291,5 +283,31 @@
 
 
     </script>
+    <script>
+        const formElement = document.querySelector('form')
+        formElement.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(event.target); // Create FormData object
+
+            fetch('/product/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    formElement.reset();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+    </script>
+
 {% endblock %}
 

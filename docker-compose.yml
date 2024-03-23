@@ -4,22 +4,15 @@ services:
   multicommerce_backend:
     container_name: multicommerce_backend
     image: hridoyboss12/multicommerce:latest
-#    platform: linux/amd64
     restart: unless-stopped
     ports:
       - "8008:8000"
     volumes:
-#      - npm:/app
       - ./.env:/app/.env:ro
-#      - ./db.sqlite3:/app/db.sqlite3
     networks:
       - mailgrass_npm
     env_file: .env
-#    build:
-#      context: .
-#      dockerfile: ./Dockerfile
 
-volumes:
-  mailgrass_npm:
 networks:
   mailgrass_npm:
+    external: true

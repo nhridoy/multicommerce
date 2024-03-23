@@ -13,13 +13,13 @@ services:
       - ./.env:/app/.env:ro
 #      - ./db.sqlite3:/app/db.sqlite3
     networks:
-      - npm
+      - mailgrass_npm
     env_file: .env
 #    build:
 #      context: .
 #      dockerfile: ./Dockerfile
 
 volumes:
-  npm:
+  mailgrass_npm:
 networks:
-  npm:
+  mailgrass_npm:

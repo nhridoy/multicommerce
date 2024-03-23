@@ -30,7 +30,6 @@
 
 {% block script_block %}
     <script>
-
         let productAPI = '/product/?page=1'
         const productsContainer = document.getElementById('products');
         const loadingElement = document.getElementById('loading');
@@ -68,6 +67,7 @@
                         btnElement.type = "button"
                         btnElement.textContent = `Add to Cart`;
                         btnElement.className = "p-4 text-center bg-yellow-400 hover:bg-yellow-600";
+                        btnElement.addEventListener('click', () => addToCart(product.id));
 
                         postElement.appendChild(imgElement);
                         postElement.appendChild(sellerElement);
@@ -99,6 +99,18 @@
             }
         });
 
-
+        function addToCart(productId) {
+            fetch(`/product/add-to-cart/${productId}/`, {
+                method: 'GET', // or 'GET' if you're fetching data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Product added to cart:', data);
+                    // Handle the response as needed
+                })
+                .catch(error => {
+                    console.error('Error adding product to cart:', error);
+                });
+        }
     </script>
 {% endblock %}

@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.views.static import serve
 
-urlpatterns = [
+urlpatterns = [ path('api-auth/', include('rest_framework.urls')),
                   path('admin/', admin.site.urls),
                   path('user/', include("user.urls")),
                   path('cart/', include("cart.urls")),

@@ -3,24 +3,102 @@
 
 {% block body_block %}
     <div class="grid grid-cols-3 items-center gap-4 mt-4" id="products">
-        {% for product in products %}
-            <div class="col-span-1 bg-gray-200 border product flex flex-col gap-2">
-                <img src="{{ product.image.url }}" alt="" class="object-cover w-full">
-                <h3 class="text-lg p-2">Seller - {{ product.seller.username }}</h3>
-                <h3 class="text-lg p-2">Product - {{ product.name }}</h3>
-                <h3 class="text-lg p-2">BDT - {{ product.price }}</h3>
-                <a href="{% url 'cart:add_to_cart' product_id=product.pk %}" class="p-4 text-center bg-yellow-400 hover:bg-yellow-600"
-                >Add to Cart</a>
-
-                {% if products.has_next and forloop.last %}
-                    <span hx-get="{% url 'ecommerce:index' %}?page={{ products.next_page_number }}"
-                          hx-swap="beforeend" hx-target="#products" hx-select=".product"
-                          hx-trigger="revealed">
-            </span>
-                {% endif %}
-            </div>
-        {% endfor %}
+        {#        {% for product in products %}#}
+        {#            <div class="col-span-1 bg-gray-200 border product flex flex-col gap-2">#}
+        {#                <img src="{{ product.image.url }}" alt="" class="object-cover w-full">#}
+        {#                <h3 class="text-lg p-2">Seller - {{ product.seller.username }}</h3>#}
+        {#                <h3 class="text-lg p-2">Product - {{ product.name }}</h3>#}
+        {#                <h3 class="text-lg p-2">BDT - {{ product.price }}</h3>#}
+        {#                <a href="{% url 'cart:add_to_cart' product_id=product.pk %}"#}
+        {#                   class="p-4 text-center bg-yellow-400 hover:bg-yellow-600"#}
+        {#                >Add to Cart</a>#}
+        {##}
+        {#                {% if products.has_next and forloop.last %}#}
+        {#                    <span hx-get="{% url 'ecommerce:index' %}?page={{ products.next_page_number }}"#}
+        {#                          hx-swap="beforeend" hx-target="#products" hx-select=".product"#}
+        {#                          hx-trigger="revealed">#}
+        {#                    </span>#}
+        {#                {% endif %}#}
+        {#            </div>#}
+        {#        {% endfor %}#}
 
     </div>
+    <div id="loading" class="text-center text-2xl p-8" style="display: none;">Loading Products...</div>
+
 {% endblock %}
 
+
+{% block script_block %}
+    <script>
+
+        let productAPI = '/product/?page=1'
+        const productsContainer = document.getElementById('products');
+        const loadingElement = document.getElementById('loading');
+        let isLoading = false;
+
+        function loadMorePosts() {
+            if (!productAPI || isLoading) return;
+            isLoading = true;
+            loadingElement.style.display = 'block';
+            fetch(productAPI)
+                .then(response => response.json())
+                .then(products => {
+                    products.results.forEach(product => {
+                        const postElement = document.createElement('div');
+                        postElement.className = "col-span-1 bg-gray-200 border product flex flex-col gap-2";
+
+                        const imgElement = document.createElement('img');
+                        imgElement.src = product.image;
+                        imgElement.alt = product.name;
+                        imgElement.className = "object-cover w-full";
+
+                        const sellerElement = document.createElement('h3');
+                        sellerElement.textContent = `Seller - ${product.seller}`;
+                        sellerElement.className = "text-lg p-2";
+
+                        const productElement = document.createElement('h3');
+                        productElement.textContent = `Product - ${product.name}`;
+                        productElement.className = "text-lg p-2";
+
+                        const priceElement = document.createElement('h3');
+                        priceElement.textContent = `BDT - ${product.price}`;
+                        priceElement.className = "text-lg p-2";
+
+                        const btnElement = document.createElement('button');
+                        btnElement.type = "button"
+                        btnElement.textContent = `Add to Cart`;
+                        btnElement.className = "p-4 text-center bg-yellow-400 hover:bg-yellow-600";
+
+                        postElement.appendChild(imgElement);
+                        postElement.appendChild(sellerElement);
+                        postElement.appendChild(productElement);
+                        postElement.appendChild(priceElement);
+                        postElement.appendChild(btnElement);
+
+                        productsContainer.appendChild(postElement);
+                    });
+                    productAPI = products.next
+                    isLoading = false;
+                    loadingElement.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                    isLoading = false;
+                    loadingElement.style.display = 'none';
+                });
+        }
+
+        // Initial load
+        loadMorePosts();
+
+        // Infinite scroll
+        window.addEventListener('scroll', () => {
+            const offset = 200;
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - offset) {
+                loadMorePosts();
+            }
+        });
+
+
+    </script>
+{% endblock %}

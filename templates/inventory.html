@@ -174,15 +174,17 @@
 
 {% block body_block %}
     <button class="bg-yellow-400 hover:bg-yellow-600 p-4" data-micromodal-trigger="modal-1">Add New Item</button>
-    <div class="grid grid-cols-3 items-center gap-4 mt-4">
-        {% for product in products %}
-            <div class="col-span-1 bg-gray-200 border">
-                <img src="{{ product.image.url }}" alt="" class="object-cover w-full">
-                <h3 class="text-lg p-2">{{ product.name }}</h3>
-                <h3 class="text-lg p-2">BDT - {{ product.price }}</h3>
-            </div>
-        {% endfor %}
+    <div class="grid grid-cols-3 items-center gap-4 mt-4" id="products">
+        {#        {% for product in products %}#}
+        {#            <div class="col-span-1 bg-gray-200 border">#}
+        {#                <img src="{{ product.image.url }}" alt="" class="object-cover w-full">#}
+        {#                <h3 class="text-lg p-2">{{ product.name }}</h3>#}
+        {#                <h3 class="text-lg p-2">BDT - {{ product.price }}</h3>#}
+        {#            </div>#}
+        {#        {% endfor %}#}
     </div>
+    <div id="loading" class="text-center text-2xl p-8" style="display: none;">Loading Products...</div>
+
 
     <!-- Modal -->
     <div class="modal micromodal-slide" style="font-family: 'Poppins', sans-serif;" id="modal-1" aria-hidden="true">
@@ -213,16 +215,81 @@
         </div>
     </div>
 
+{% endblock %}
 
-    {% block script_block %}
-        <!-- Modal Section -->
+{% block script_block %}
+    <script>
+        MicroModal.init({
+            awaitCloseAnimation: true,
+        });
 
-        <script>
-            MicroModal.init({
-                awaitCloseAnimation: true,
-            });
+    </script>
+    <script>
 
-        </script>
-    {% endblock %}
+        let productAPI = '/product/?page=1'
+        const productsContainer = document.getElementById('products');
+        const loadingElement = document.getElementById('loading');
+        let isLoading = false;
+
+        function loadMorePosts() {
+            if (!productAPI || isLoading) return;
+            isLoading = true;
+            loadingElement.style.display = 'block';
+            fetch(productAPI)
+                .then(response => response.json())
+                .then(products => {
+                    products.results.forEach(product => {
+                        const postElement = document.createElement('div');
+                        postElement.className = "col-span-1 bg-gray-200 border product flex flex-col gap-2";
+
+                        const imgElement = document.createElement('img');
+                        imgElement.src = product.image;
+                        imgElement.alt = product.name;
+                        imgElement.className = "object-cover w-full";
+
+                        const sellerElement = document.createElement('h3');
+                        sellerElement.textContent = `Seller - ${product.seller}`;
+                        sellerElement.className = "text-lg p-2";
+
+                        const productElement = document.createElement('h3');
+                        productElement.textContent = `Product - ${product.name}`;
+                        productElement.className = "text-lg p-2";
+
+                        const priceElement = document.createElement('h3');
+                        priceElement.textContent = `BDT - ${product.price}`;
+                        priceElement.className = "text-lg p-2";
+
+                        postElement.appendChild(imgElement);
+                        postElement.appendChild(sellerElement);
+                        postElement.appendChild(productElement);
+                        postElement.appendChild(priceElement);
+
+                        productsContainer.appendChild(postElement);
+                    });
+                    productAPI = products.next
+                    isLoading = false;
+                    loadingElement.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error)
+                    isLoading = false;
+                    loadingElement.style.display = 'none';
+                });
+        }
+
+        
+        // Initial load
+        loadMorePosts();
+
+        // Infinite scroll
+        window.addEventListener('scroll', () => {
+            const offset = 200;
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - offset) {
+                loadMorePosts();
+            }
+        });
+
+
+    </script>
 {% endblock %}
 

@@ -12,7 +12,31 @@ services:
     networks:
       - mailgrass_npm
     env_file: .env
-
+  celery:
+    image: hridoyboss12/multicommerce:latest
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./.env:/app/.env:ro
+    networks:
+      - mailgrass_npm
+    depends_on:
+      - multicommerce_backend
+    entrypoint: "celery -A core worker -P eventlet --autoscale=10,1 -l INFO"
+  celery_beat:
+    image: hridoyboss12/multicommerce:latest
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./.env:/app/.env:ro
+    networks:
+      - mailgrass_npm
+    depends_on:
+      - celery
+    entrypoint: "celery -A core beat -l INFO"
+volumes:
+  npm:
+  postgres:
 networks:
   mailgrass_npm:
     external: true

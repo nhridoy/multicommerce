@@ -1,4 +1,8 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,7 +18,7 @@ MEDIA_DIR = BASE_DIR.joinpath('media')
 SECRET_KEY = 'django-insecure-%#36&-@u4h_#mvw+jbw^*(*0*%o=9o5q37q1v5giuvyl8qu&a0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -34,7 +38,8 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_tailwind",
     "django_crontab",
-    "rest_framework"
+    "rest_framework",
+    "django_celery_beat",
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
@@ -127,7 +132,6 @@ USE_TZ = True
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -153,5 +157,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
 
 CRONJOBS = [
-    ('0 0 * * *', 'ecommerce.cronjob.daily_job')
+    # ('0 0 * * *', 'ecommerce.cronjob.daily_job')
 ]
+
+# Celery Configuration Options
+CELERY_BROKER_URL = os.getenv("RABBIT_URL", os.getenv("REDIS_URL"))
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BROKER_CONNECTION_RETRY = True
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# Celery Beat Settings
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"  # noqa

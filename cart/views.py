@@ -41,7 +41,7 @@ def confirm_order(request):
     cart = Cart.objects.get(user=request.user)
 
     # Create an Order instance linked to the current user's cart
-    order = Order.objects.create(user=request.user, cart=cart)
+    order = Order.objects.create(user=request.user, cart=cart, revenue=cart.get_total())
 
     # Clear the cart by deleting all CartItem instances
     cart.cart_item_cart.all().delete()

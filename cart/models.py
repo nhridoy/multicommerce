@@ -22,8 +22,8 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
 
-
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    revenue = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

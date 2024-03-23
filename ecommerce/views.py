@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .models import DailyData
 from product.models import Product
-from cart.models import Cart, CartItem, Order
+from cart.models import Cart, CartItem
 from user.models import User
 
 from .serializers import UserSerializer, ProductSerializer, CartSerializer, CartItemSerializer, OrderSerializer, DailyDataSerializer
@@ -12,6 +12,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
+from cart.models import Order
 
 
 def indexView(request):

@@ -19,7 +19,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.beat_schedule = {
     "periodic_task": {
         "task": "ecommerce.tasks.daily_job",
-        "schedule": crontab(minute="*/", hour="0", day_of_month='*', month_of_year="*", day_of_week="*"),
+        "schedule": crontab(minute="*/1", hour="0", day_of_month='*', month_of_year="*", day_of_week="*"),
         # "schedule": 10,
         # "args": {today - timedelta(days=1)},
     }

@@ -24,7 +24,7 @@ services:
     #    command:
     #      - 'redis-server'
     networks:
-      - npm
+      - mailgrass_npm
   celery:
     image: hridoyboss12/multicommerce:latest
     restart: unless-stopped
